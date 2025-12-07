@@ -162,7 +162,6 @@ forecast-agent/
 - Implement `list_models() -> List[str]`
 - Implement `get_compatible_models(data_characteristics: Dict) -> List[str]`:
   - Filter models based on:
-    - `is_multivariate` vs `handles_multivariate`
     - `has_exogenous` vs `handles_exogenous`
     - `n_samples` vs `min_samples`
     - `n_features` vs `max_features`
@@ -200,7 +199,7 @@ forecast-agent/
 **Requirements**:
 - Create `EDAAgent` class
 - Implement `profile_data(df: pd.DataFrame, target_column: str, date_column: str) -> Dict[str, Any]`:
-  - Calculate: n_samples, n_features, is_multivariate, has_exogenous
+  - Calculate: n_samples, n_features, has_exogenous
   - Detect seasonality (use simple autocorrelation check)
   - Detect trend (use simple linear regression slope)
   - Calculate missing data percentage
@@ -620,6 +619,18 @@ uv run pytest tests/ --cov
 - Support multiple LLM providers (OpenAI, Gemini, etc)
 - Update env var names: `LLM_API_KEY`, `LLM_MODEL`, `LLM_PROVIDER`
 - Maintain backwards compat with existing YAML configs
+
+---
+
+### Task 10.2: Multivariate Forecasting Support
+
+**Goal**: Support multiple target variables (multivariate forecasting).
+
+**Requirements**:
+- Add `is_multivariate` to data profile (multiple target columns)
+- Add `handles_multivariate` filter logic to ModelRegistry
+- Update orchestrator model selection rules
+- Currently the codebase assumes a single target variable
 
 ---
 
