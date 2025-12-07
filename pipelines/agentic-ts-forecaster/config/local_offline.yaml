@@ -1,0 +1,18 @@
+# Local SLM orchestrator configuration
+# Uses Ollama for offline LLM inference
+
+orchestrator:
+  type: local
+  local_model_name: phi4-mini
+
+pipeline:
+  target_column: target
+  date_column: date
+  exogenous_columns: []
+  horizon: 12
+  test_size: 0.2
+  force_models: []
+  enable_market_research: false
+  output_dir: ./outputs
+  generate_report: true
+  generate_presentation: false
