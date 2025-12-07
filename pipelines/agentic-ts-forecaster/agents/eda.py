@@ -10,15 +10,17 @@ class EDAAgent:
 
     DEFAULT_SEASONALITY_THRESHOLD = 0.3
     DEFAULT_TREND_PVALUE = 0.05
-    SEASONAL_LAGS = [12, 24]
+    DEFAULT_SEASONAL_LAGS = [12, 24]
 
     def __init__(
         self,
         seasonality_threshold: float = DEFAULT_SEASONALITY_THRESHOLD,
         trend_pvalue: float = DEFAULT_TREND_PVALUE,
+        seasonal_lags: List[int] = DEFAULT_SEASONAL_LAGS,
     ) -> None:
         self.seasonality_threshold = seasonality_threshold
         self.trend_pvalue = trend_pvalue
+        self.seasonal_lags = seasonal_lags if seasonal_lags else self.DEFAULT_SEASONAL_LAGS
 
     def profile_data(
         self, df: pd.DataFrame, target_column: str, date_column: str
@@ -33,7 +35,7 @@ class EDAAgent:
         Returns:
             Dict with profile matching orchestrator expectations:
                 - n_samples, n_features
-                - is_multivariate, has_exogenous
+                - has_exogenous
                 - has_seasonality, seasonality_strength
                 - trend_detected
                 - missing_percentage
@@ -44,7 +46,6 @@ class EDAAgent:
         feature_cols = [c for c in df.columns if c not in [date_column, target_column]]
         n_features = len(feature_cols)
 
-        is_multivariate = n_features > 0
         has_exogenous = n_features > 0
 
         # Get target series
@@ -62,7 +63,6 @@ class EDAAgent:
         return {
             "n_samples": n_samples,
             "n_features": n_features,
-            "is_multivariate": is_multivariate,
             "has_exogenous": has_exogenous,
             "has_seasonality": has_seasonality,
             "seasonality_strength": seasonality_strength,
@@ -77,11 +77,11 @@ class EDAAgent:
             Tuple of (has_seasonality, seasonality_strength).
             Strength is max |ACF| across seasonal lags.
         """
-        if len(series) < max(self.SEASONAL_LAGS) + 1:
+        if len(series) < max(self.seasonal_lags) + 1:
             return False, 0.0
 
         acf_values = []
-        for lag in self.SEASONAL_LAGS:
+        for lag in self.seasonal_lags:
             if lag < len(series):
                 acf = series.autocorr(lag=lag)
                 if not np.isnan(acf):

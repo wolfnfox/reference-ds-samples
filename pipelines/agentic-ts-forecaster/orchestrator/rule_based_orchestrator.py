@@ -21,7 +21,7 @@ class RuleBasedOrchestrator(OrchestratorBase):
         rationale_parts = []
 
         n_samples = data_profile.get("n_samples", 0)
-        is_multivariate = data_profile.get("is_multivariate", False)
+        has_exogenous = data_profile.get("has_exogenous", False)
         has_seasonality = data_profile.get("has_seasonality", False)
         seasonality_strength = data_profile.get("seasonality_strength", 0.0)
 
@@ -32,10 +32,10 @@ class RuleBasedOrchestrator(OrchestratorBase):
 
         # Rule 2: Large dataset - add deep learning models
         if n_samples > self.LARGE_DATASET_THRESHOLD:
-            if is_multivariate and "PatchTSMixer" in available_models:
+            if has_exogenous and "PatchTSMixer" in available_models:
                 selected.append("PatchTSMixer")
                 rationale_parts.append(
-                    f"PatchTSMixer added for multivariate data with {n_samples} samples"
+                    f"PatchTSMixer added for exogenous features with {n_samples} samples"
                 )
             elif "LSTM" in available_models:
                 selected.append("LSTM")
@@ -56,9 +56,9 @@ class RuleBasedOrchestrator(OrchestratorBase):
             rationale_parts.append("Fallback: using first available models")
 
         # Determine expected winner
-        if is_multivariate and "PatchTSMixer" in selected:
+        if has_exogenous and "PatchTSMixer" in selected:
             expected_winner = "PatchTSMixer"
-            expected_reason = "Best suited for multivariate time series"
+            expected_reason = "Best suited for data with exogenous features"
         elif has_seasonality and "Prophet" in selected:
             expected_winner = "Prophet"
             expected_reason = "Optimized for seasonal data"

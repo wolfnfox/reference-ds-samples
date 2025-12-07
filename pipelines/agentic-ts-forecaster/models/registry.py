@@ -15,7 +15,11 @@ class ModelRegistry:
         pass
 
     def register(self, model: TimeSeriesModelAgent) -> None:
-        """Register a model instance."""
+        """Register a model instance.
+        
+        Args:
+            model (TimeSeriesModelAgent): Model instance to register.
+        """
         self._models[model.name] = model
 
     def get_model(self, name: str) -> TimeSeriesModelAgent:
@@ -33,7 +37,6 @@ class ModelRegistry:
 
         Args:
             data_characteristics: Dict with keys:
-                - is_multivariate: bool
                 - has_exogenous: bool
                 - n_samples: int
                 - n_features: int
@@ -41,7 +44,6 @@ class ModelRegistry:
         Returns:
             List of compatible model names.
         """
-        is_multivariate = data_characteristics.get("is_multivariate", False)
         has_exogenous = data_characteristics.get("has_exogenous", False)
         n_samples = data_characteristics.get("n_samples", 0)
         n_features = data_characteristics.get("n_features", 1)
@@ -49,10 +51,6 @@ class ModelRegistry:
         compatible = []
         for name, model in self._models.items():
             caps = model.capabilities
-
-            # Multivariate check
-            if is_multivariate and not caps.handles_multivariate:
-                continue
 
             # Exogenous check
             if has_exogenous and not caps.handles_exogenous:
