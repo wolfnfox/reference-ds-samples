@@ -1,0 +1,19 @@
+# Claude API orchestrator configuration
+# Requires ANTHROPIC_API_KEY environment variable
+
+orchestrator:
+  type: claude
+  claude_api_key: ${ANTHROPIC_API_KEY}
+  claude_model: claude-sonnet-4-5-20250929
+
+pipeline:
+  target_column: target
+  date_column: date
+  exogenous_columns: []
+  horizon: 12
+  test_size: 0.2
+  force_models: []
+  enable_market_research: true
+  output_dir: ./outputs
+  generate_report: true
+  generate_presentation: true
