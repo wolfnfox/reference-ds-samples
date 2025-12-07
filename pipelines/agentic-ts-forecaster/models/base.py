@@ -1,10 +1,11 @@
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Dict, Any, List
+from typing import Any, Dict, List, Optional
 import pandas as pd
 
 @dataclass
 class ModelCapabilities:
+    """Dataclass to hold model capabilities"""
     handles_multivariate: bool
     handles_exogenous: bool
     handles_seasonality: bool
@@ -15,6 +16,7 @@ class ModelCapabilities:
 
 @dataclass
 class ModelResult:
+    """Dataclass to hold the results of model training and evaluation"""
     model_name: str
     predictions: pd.DataFrame
     metrics: Dict[str, float]
@@ -41,8 +43,8 @@ class TimeSeriesModelAgent(ABC):
         self, 
         train_data: pd.DataFrame,
         target_column: str,
-        exogenous_columns: List[str] = None,
-        config: Dict[str, Any] = None
+        exogenous_columns: Optional[List[str]] = None,
+        config: Optional[Dict[str, Any]] = None
     ) -> None:
         pass
     
@@ -50,7 +52,7 @@ class TimeSeriesModelAgent(ABC):
     def predict(
         self, 
         horizon: int,
-        exogenous_future: pd.DataFrame = None
+        exogenous_future: Optional[pd.DataFrame] = None
     ) -> pd.DataFrame:
         pass
     
@@ -71,8 +73,8 @@ class TimeSeriesModelAgent(ABC):
         train_data: pd.DataFrame,
         test_data: pd.DataFrame,
         target_column: str,
-        exogenous_columns: List[str] = None,
-        config: Dict[str, Any] = None
+        exogenous_columns: Optional[List[str]] = None,
+        config: Optional[Dict[str, Any]] = None
     ) -> ModelResult:
         """Standardized full pipeline - implements common logic"""
         import time

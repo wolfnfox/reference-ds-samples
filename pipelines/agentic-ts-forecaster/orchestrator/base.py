@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any
+from typing import  Any, Dict, List, Optional
 from dataclasses import dataclass
 
 @dataclass
@@ -39,7 +39,7 @@ class OrchestratorBase(ABC):
         self,
         analysis: Dict[str, Any],
         model_results: List[Any],
-        market_research: str = None
+        market_research: Optional[str] = None
     ) -> str:
         """Generate final report"""
         pass
