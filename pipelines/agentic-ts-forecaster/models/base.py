@@ -78,6 +78,10 @@ class TimeSeriesModelAgent(ABC):
     ) -> ModelResult:
         """Standardized full pipeline - implements common logic"""
         import time
+
+        missing_cols = [col for col in [target_column] + (exogenous_columns or []) if col not in train_data.columns]
+        if missing_cols:
+            raise ValueError(f"Missing columns in training data: {missing_cols}")
         
         start_time = time.time()
         
