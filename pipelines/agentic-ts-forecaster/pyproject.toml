@@ -1,0 +1,66 @@
+[project]
+name = "agentic-ts-forecaster"
+version = "0.1.0"
+description = "Agentic time series forecasting system with pluggable orchestrators"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "anthropic>=0.75.0",
+    "joblib>=1.5.2",
+    "matplotlib>=3.10.7",
+    "numpy>=2.3.5",
+    "ollama>=0.6.1",
+    "pandas>=2.3.3",
+    "plotly>=6.5.0",
+    "prophet>=1.2.1",
+    "python-docx>=1.2.0",
+    "python-dotenv>=1.2.1",
+    "python-pptx>=1.0.2",
+    "pyyaml>=6.0.3",
+    "rich>=14.2.0",
+    "scikit-learn>=1.7.2",
+    "seaborn>=0.13.2",
+    "shap>=0.49.1",
+    "statsmodels>=0.14.6",
+    "tensorflow>=2.20.0",
+    "typer>=0.20.0",
+]
+
+[dependency-groups]
+dev = [
+    "black>=25.11.0",
+    "mypy>=1.19.0",
+    "pytest>=9.0.2",
+    "pytest-cov>=7.0.0",
+    "ruff>=0.14.8",
+]
+
+[project.scripts]
+forecast = "cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["orchestrator", "models", "agents"]
+
+[tool.black]
+line-length = 100
+target-version = ['py312']
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+python_functions = "test_*"
+addopts = "-v --cov=. --cov-report=html --cov-report=term"
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = false
