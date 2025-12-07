@@ -1,4 +1,4 @@
-from typing import Any, Dict, List
+from typing import Any, Dict
 
 import numpy as np
 import pandas as pd
@@ -77,12 +77,13 @@ class DataIngestionAgent:
         numeric_cols = df.select_dtypes(include=[np.number]).columns
 
         for col in numeric_cols:
-            q1 = df[col].quantile(0.25)
-            q3 = df[col].quantile(0.75)
+            col_data = df[col].dropna()
+            q1 = col_data.quantile(0.25)
+            q3 = col_data.quantile(0.75)
             iqr = q3 - q1
             lower = q1 - self.IQR_MULTIPLIER * iqr
             upper = q3 + self.IQR_MULTIPLIER * iqr
-            count = ((df[col] < lower) | (df[col] > upper)).sum()
+            count = ((col_data < lower) | (col_data > upper)).sum()
             if count > 0:
                 outliers[col] = int(count)
 
