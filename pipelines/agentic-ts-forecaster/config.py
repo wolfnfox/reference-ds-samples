@@ -70,8 +70,15 @@ class OrchestratorConfig:
     def from_yaml(cls, path: str) -> "OrchestratorConfig":
         """Load configuration from YAML file."""
         load_dotenv()
-        with open(path) as f:
-            data = yaml.safe_load(f)
+
+        try:
+            with open(path) as f:
+                data = yaml.safe_load(f)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"YAML configuration file not found: {path}")
+        except yaml.YAMLError as e:
+            raise ValueError(f"Error parsing YAML file: {e}")
+        
         orch_data = data.get("orchestrator", {})
         orch_data = _expand_env_vars(orch_data)
         return cls(
@@ -102,8 +109,15 @@ class PipelineConfig:
     def from_yaml(cls, path: str) -> "PipelineConfig":
         """Load full pipeline configuration from YAML file."""
         load_dotenv()
-        with open(path) as f:
-            data = yaml.safe_load(f)
+        
+        try:
+            with open(path) as f:
+                data = yaml.safe_load(f)
+        except FileNotFoundError:
+            raise FileNotFoundError(f"YAML configuration file not found: {path}")
+        except yaml.YAMLError as e:
+            raise ValueError(f"Error parsing YAML file: {e}")
+        
         data = _expand_env_vars(data)
 
         orch_data = data.get("orchestrator", {})

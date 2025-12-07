@@ -31,7 +31,11 @@ class OrchestratorFactory:
             try:
                 from .local_orchestrator import LocalSLMOrchestrator
             except ImportError as e:
-                raise ImportError("Ollama not installed. Run: pip install ollama") from e
+                missing_module = getattr(e, 'name', None)
+                if missing_module == 'ollama':
+                    raise ImportError("Ollama not installed. Run: pip install ollama") from e
+                else:
+                    raise
             model_name = kwargs.get("model_name", DEFAULT_LOCAL_MODEL)
             return LocalSLMOrchestrator(model_name=model_name)
 
@@ -40,7 +44,11 @@ class OrchestratorFactory:
             try:
                 from .claude_orchestrator import ClaudeOrchestrator
             except ImportError as e:
-                raise ImportError("Anthropic not installed. Run: pip install anthropic") from e
+                missing_module = getattr(e, 'name', None)
+                if missing_module == 'anthropic':
+                    raise ImportError("Anthropic not installed. Run: pip install anthropic") from e
+                else:
+                    raise
             api_key = kwargs.get("api_key")
             model = kwargs.get("model", DEFAULT_CLAUDE_MODEL)
             if not api_key:

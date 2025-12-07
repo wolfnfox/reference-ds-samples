@@ -98,15 +98,19 @@ class RuleBasedOrchestrator(OrchestratorBase):
         )
 
         best = sorted_results[0]
-        best_rmse = best.metrics.get("rmse", 0)
-        best_mae = best.metrics.get("mae", 0)
+        best_rmse = best.metrics.get("rmse", None)
+
+        if best_rmse is None:
+            raise ValueError("Best model does not have RMSE metric, cannot compute insights.")
+        if best_rmse == 0:
+            raise ValueError("Best model has RMSE of zero, cannot compute insights.")
 
         insights = [f"{best.model_name} achieved lowest RMSE ({best_rmse:.4f})"]
 
         # Compare with other models
         if len(sorted_results) > 1:
             second = sorted_results[1]
-            second_rmse = second.metrics.get("rmse", 0)
+            second_rmse = second.metrics.get("rmse", None)
             improvement = ((second_rmse - best_rmse) / second_rmse * 100) if second_rmse else 0
             insights.append(
                 f"{best.model_name} outperformed {second.model_name} by {improvement:.1f}%"
@@ -164,9 +168,12 @@ class RuleBasedOrchestrator(OrchestratorBase):
             lines.append("| Model | RMSE | MAE | R² | Training Time |")
             lines.append("|-------|------|-----|-----|---------------|")
             for r in sorted(model_results, key=lambda x: x.metrics.get("rmse", float("inf"))):
-                rmse = r.metrics.get("rmse", 0)
-                mae = r.metrics.get("mae", 0)
-                r2 = r.metrics.get("r2", 0)
+                rmse = r.metrics.get("rmse", 0.0)
+                rmse = rmse if isinstance(rmse, (float, int)) else 0
+                mae = r.metrics.get("mae", 0.0)
+                mae = mae if isinstance(mae, (float, int)) else 0
+                r2 = r.metrics.get("r2", 0.0)
+                r2 = r2 if isinstance(r2, (float, int)) else 0
                 lines.append(f"| {r.model_name} | {rmse:.4f} | {mae:.4f} | {r2:.4f} | {r.training_time:.1f}s |")
             lines.append("")
 

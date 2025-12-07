@@ -71,8 +71,8 @@ forecast-agent/
 - Create `OrchestratorConfig` dataclass with fields:
   - `type: str` (claude/local/rule-based)
   - `claude_api_key: Optional[str]`
-  - `claude_model: str` (default: "claude-sonnet-4-20250514")
-  - `local_model_name: str` (default: "llama3.1:8b")
+  - `claude_model: str` (default: "claude-sonnet-4-5-20250929")
+  - `local_model_name: str` (default: "phi4-mini")
 - Add class methods: `from_env()` and `from_yaml()`
 - Create `PipelineConfig` dataclass with fields:
   - `orchestrator: OrchestratorConfig`
@@ -358,7 +358,7 @@ forecast-agent/
 
 **Requirements**:
 - Create `LocalSLMOrchestrator` class inheriting from `OrchestratorBase`
-- Accept `model_name` in `__init__` (default: "llama3.1:8b")
+- Accept `model_name` in `__init__` (default: "phi4-mini")
 - Initialize Ollama client, verify model is available (pull if not)
 - Implement `select_models()`:
   - Create simplified prompt optimized for smaller models
