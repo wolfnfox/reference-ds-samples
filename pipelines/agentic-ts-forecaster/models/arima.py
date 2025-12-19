@@ -15,6 +15,7 @@ class ARIMAAgent(TimeSeriesModelAgent):
     def __init__(self) -> None:
         self._model: Optional[Any] = None
         self._target_column: Optional[str] = None
+        self._exogenous_columns: Optional[List[str]] = None
 
     @property
     def name(self) -> str:
@@ -43,6 +44,7 @@ class ARIMAAgent(TimeSeriesModelAgent):
         """Train ARIMA model using auto_arima for order selection."""
         config = config or {}
         self._target_column = target_column
+        self._exogenous_columns = exogenous_columns
 
         y = train_data[target_column].values
         exog = train_data[exogenous_columns].values if exogenous_columns else None
@@ -86,7 +88,8 @@ class ARIMAAgent(TimeSeriesModelAgent):
             raise RuntimeError("Model not trained. Call train() first.")
 
         y_true = test_data[target_column].values
-        y_pred = self._model.predict(n_periods=len(test_data))
+        exog = test_data[self._exogenous_columns].values if self._exogenous_columns else None
+        y_pred = self._model.predict(n_periods=len(test_data), exogenous=exog)
 
         rmse = float(np.sqrt(mean_squared_error(y_true, y_pred)))
         mae = float(mean_absolute_error(y_true, y_pred))
