@@ -6,6 +6,7 @@ from pmdarima import auto_arima
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from .base import ModelCapabilities, TimeSeriesModelAgent
+from ..helpers.dictionary import get_or_default
 
 
 class ARIMAAgent(TimeSeriesModelAgent):
@@ -47,23 +48,24 @@ class ARIMAAgent(TimeSeriesModelAgent):
         exog = train_data[exogenous_columns].values if exogenous_columns else None
 
         # Auto ARIMA parameters
-        seasonal = config.get("seasonal", True)
-        m = config.get("m", 12)  # Seasonal period
-        max_p = config.get("max_p", 3)
-        max_q = config.get("max_q", 3)
-        max_d = config.get("max_d", 2)
+        seasonal = get_or_default(config, "seasonal", bool, True)
+        m = get_or_default(config, "m", int, 12)  # Seasonal period
+        max_p = get_or_default(config, "max_p", int, 3)
+        max_q = get_or_default(config, "max_q", int, 3)
+        max_d = get_or_default(config, "max_d", int, 2)
+        max_P = get_or_default(config, "max_P", int, 2)
+        max_Q = get_or_default(config, "max_Q", int, 2)
+        max_D = get_or_default(config, "max_D", int, 1)
 
         self._model = auto_arima(
-            y,
-            exogenous=exog,
-            seasonal=seasonal,
-            m=m,
-            max_p=max_p,
-            max_q=max_q,
-            max_d=max_d,
-            suppress_warnings=True,
-            error_action="ignore",
-            stepwise=True,
+            y, exogenous=exog, scale_exog=True,
+            start_p=0, d=None, start_q=0, max_p=max_p, max_d=max_d, max_q=max_q,
+            start_P=0, D=None, start_Q=0, max_P=max_P, max_D=max_D, max_Q=max_Q,
+            max_order=5, m=m, seasonal=seasonal, stationary=False,
+            information_criterion='aic', alpha=0.05,
+            test='kpss', seasonal_test='ocsb',
+            stepwise=True, n_jobs=1, method='lbfgs', maxiter=50,
+            trace=True, error_action='ignore', suppress_warnings=True
         )
 
     def predict(
