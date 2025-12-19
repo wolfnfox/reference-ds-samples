@@ -6,7 +6,7 @@ from pmdarima import auto_arima
 from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
 from .base import ModelCapabilities, TimeSeriesModelAgent
-from ..helpers.dictionary import get_or_default
+from helpers.dictionary import get_or_default
 
 
 class ARIMAAgent(TimeSeriesModelAgent):
