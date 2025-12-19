@@ -37,7 +37,7 @@ class ARIMAAgent(TimeSeriesModelAgent):
         self,
         train_data: pd.DataFrame,
         target_column: str,
-        date_column: str,
+        date_column: str,  # noqa: ARG002 - unused; ARIMA uses index-based ordering
         exogenous_columns: Optional[List[str]] = None,
         config: Optional[Dict[str, Any]] = None,
     ) -> None:
