@@ -37,7 +37,7 @@ class ARIMAAgent(TimeSeriesModelAgent):
         self,
         train_data: pd.DataFrame,
         target_column: str,
-        date_column: str,  # noqa: ARG002 - unused; ARIMA uses index-based ordering
+        date_column: str,  # Used to sort data for correct temporal ordering
         exogenous_columns: Optional[List[str]] = None,
         config: Optional[Dict[str, Any]] = None,
     ) -> None:
@@ -46,6 +46,7 @@ class ARIMAAgent(TimeSeriesModelAgent):
         self._target_column = target_column
         self._exogenous_columns = exogenous_columns
 
+        train_data = train_data.sort_values(date_column).reset_index(drop=True)
         y = train_data[target_column].values
         exog = train_data[exogenous_columns].values if exogenous_columns else None
 
