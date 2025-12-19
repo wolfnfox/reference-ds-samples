@@ -1,6 +1,8 @@
 from typing import Any, Dict, List
 
+from .arima import ARIMAAgent
 from .base import TimeSeriesModelAgent
+from .prophet import ProphetAgent
 
 
 class ModelRegistry:
@@ -11,8 +13,9 @@ class ModelRegistry:
         self._register_defaults()
 
     def _register_defaults(self) -> None:
-        """Register default models. Extended in Phase 3."""
-        pass
+        """Register default models."""
+        self.register(ARIMAAgent())
+        self.register(ProphetAgent())
 
     def register(self, model: TimeSeriesModelAgent) -> None:
         """Register a model instance.

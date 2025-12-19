@@ -40,9 +40,10 @@ class TimeSeriesModelAgent(ABC):
     
     @abstractmethod
     def train(
-        self, 
+        self,
         train_data: pd.DataFrame,
         target_column: str,
+        date_column: str,
         exogenous_columns: Optional[List[str]] = None,
         config: Optional[Dict[str, Any]] = None
     ) -> None:
@@ -73,19 +74,21 @@ class TimeSeriesModelAgent(ABC):
         train_data: pd.DataFrame,
         test_data: pd.DataFrame,
         target_column: str,
+        date_column: str,
         exogenous_columns: Optional[List[str]] = None,
         config: Optional[Dict[str, Any]] = None
     ) -> ModelResult:
         """Standardized full pipeline - implements common logic"""
         import time
 
-        missing_cols = [col for col in [target_column] + (exogenous_columns or []) if col not in train_data.columns]
+        required_cols = [target_column, date_column] + (exogenous_columns or [])
+        missing_cols = [col for col in required_cols if col not in train_data.columns]
         if missing_cols:
             raise ValueError(f"Missing columns in training data: {missing_cols}")
-        
+
         start_time = time.time()
-        
-        self.train(train_data, target_column, exogenous_columns, config)
+
+        self.train(train_data, target_column, date_column, exogenous_columns, config)
         predictions = self.predict(
             horizon=len(test_data),
             exogenous_future=test_data[exogenous_columns] if exogenous_columns else None
