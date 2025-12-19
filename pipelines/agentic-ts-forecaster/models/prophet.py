@@ -94,7 +94,6 @@ class ProphetAgent(TimeSeriesModelAgent):
         # Add exogenous columns to future
         if self._exogenous_columns and exogenous_future is not None:
             # Combine historical and future exogenous values
-            n_train = len(self._train_df)
             for col in self._exogenous_columns:
                 historical = self._train_df[col].values
                 future_vals = exogenous_future[col].values
@@ -117,7 +116,6 @@ class ProphetAgent(TimeSeriesModelAgent):
         future = self._model.make_future_dataframe(periods=len(test_data), freq="D")
 
         if self._exogenous_columns:
-            n_train = len(self._train_df)
             for col in self._exogenous_columns:
                 historical = self._train_df[col].values
                 if col in test_data.columns:
