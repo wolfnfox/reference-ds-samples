@@ -51,25 +51,5 @@ def forecast(
     if result.get("report_path"):
         console.print(f"Report: {result['report_path']}")
 
-@app.command()
-def init():
-    """Initialize project structure"""
-    console.print("Creating project directories...")
-    
-    directories = [
-        "orchestrator",
-        "models", 
-        "agents",
-        "config",
-        "tests",
-        "outputs"
-    ]
-    
-    for dir_name in directories:
-        Path(dir_name).mkdir(exist_ok=True)
-        (Path(dir_name) / "__init__.py").touch()
-    
-    console.print("[green]✓[/green] Project structure created")
-
 if __name__ == "__main__":
     app()
